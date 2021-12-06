@@ -12,4 +12,5 @@ client.on('ready', () => {
 });
 
 client.login(process.env.CLIENT_TOKEN);
+//testing
 
