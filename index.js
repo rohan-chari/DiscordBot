@@ -20,7 +20,21 @@ client.on('messageCreate', async msg => {
         return;
       }else{
         fetch('https://api.openweathermap.org/data/2.5/weather?zip=' + zipCode + ',us&appid=' + process.env.WEATHER_TOKEN)
-        .then(response => response.json()).then(data => console.log(data));
+        .then(response => {
+          return response.json().then(parsedWeather =>{
+            if(parsedWeather.cod === '404'){
+              msg.channel.send("`This zip code does not exist  or there is no information available`");
+            }else{
+              msg.channel.send(`
+              
+              The current temperature in ${parsedWeather.name} is ${(Math.round(((parsedWeather.main.temp -273.15)*9/5 +32)))}° F with a feels like
+              of ${(Math.round(((parsedWeather.main.feels_like -273.15)*9/5 +32)))}° F
+              Today it will reach a high of ${(Math.round(((parsedWeather.main.temp_max -273.15)*9/5 +32)))}° F and a low of
+              ${(Math.round(((parsedWeather.main.temp_min -273.15)*9/5 +32)))}° F. The forecast for today is ${parsedWeather.weather[0].main}.    
+              `)
+            }
+          })
+        })
       }
     }
 })
